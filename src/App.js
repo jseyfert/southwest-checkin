@@ -51,13 +51,17 @@ class App extends Component {
 
     let dateTimeDeparture = departureDate + 'T' + departureTime
 
-    let url = 'http://localhost:3000/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
+    // let url = 'http://localhost:3001/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
+    // let url = 'http://localhost:3001/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
+    let url = '/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
     console.log(url)
 
     axios.get(url)
       .then((response) => {
+        console.log('in success1', response )
+        console.log('in success2', response.data.message )
         this.setState({ 
-          message: response.message, 
+          message: response.data.message, 
           pageType: 'submitted', 
         })
       })
@@ -147,7 +151,7 @@ class App extends Component {
                 <Row>
                   <Col>
                     <h1>Southwest-CheckIn</h1>
-                    {this.state.message}
+                   <h2>{this.state.message}</h2>
                   </Col>
                 </Row>
               </Container>
