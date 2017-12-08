@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardTitle, CardText, } from 'reactstrap';
 
 class App extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class App extends Component {
       confirmationNumber: 'MWVE2L',
       emailAddress: 'johnseyfert@gmail.com',
       departureDate: "2017-12-08",
-      departureTime: "16:00",
+      departureTime: "23:00",
       timeZoneDeparture: '',
     };
   }
@@ -51,13 +51,9 @@ class App extends Component {
     let dateTimeDeparture = departureDate + 'T' + departureTime
 
     let url = '/submitCheckIn/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
-    // let url = '/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
-    console.log(url)
 
     axios.get(url)
       .then((response) => {
-        console.log('in success1', response )
-        console.log('in success2', response.data.message )
         this.setState({ 
           pageType: response.data.pageType, 
           message: response.data.message, 
@@ -65,7 +61,6 @@ class App extends Component {
         })
       })
       .catch(error => {
-        console.log(error.response.status);
         this.setState({ 
           pageType: 'error', 
           message: error.response.status,
@@ -80,8 +75,21 @@ class App extends Component {
             <Jumbotron>
               <Container>
                 <Row>
-                  <Col>
-                    <h1>Southwest-CheckIn</h1>
+                  <Col md={{ size: 6}}>
+                    <h1>Southwest Auto Check-In</h1>
+                    <p>This app automatically checks you in 24 hours ahead of your flight’s departure. Just submit your info and check your email for status updates.</p>
+                    <Card>
+                      <CardHeader>southwest.com boarding pollicy</CardHeader>
+                      <CardBody>
+                        <CardText>
+                        <i>Available boarding positions will be distributed on a first-come, first-serve basis upon check in. The earlier you check in, beginning 24 hours before your departure, the lower your boarding group and position will be.</i>
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                  <br/>
+
+                  </Col>
+                  <Col md={{ size: 6}}>
                       <Form onSubmit={ this.handleSubmit }>
                        <FormGroup>
                          <Label for="firstName">First Name</Label>
@@ -132,31 +140,38 @@ class App extends Component {
           <div>
             <Jumbotron>
               <Container>
-                <Row>
-                  <Col>
-                    <h1>Southwest-CheckIn</h1>
-                    <Alert color="danger">
-                      <span><b>Error: </b>{this.state.message}</span>
-                    </Alert>
-                  </Col>
-                </Row>
+              <Row>
+                <Col>
+                  <h1>Southwest Auto Check-In</h1>
+                  <Alert color="danger">
+                   <p>The server has returned the following error: {this.state.message}</p>
+                   <p className="mb-0">
+                    Please check-in manually
+                   </p>
+                  </Alert>
+                </Col>
+              </Row>
               </Container>
             </Jumbotron>
           </div>
           );
-      }  else if (this.state.pageType === 'success') {
+      } else if (this.state.pageType === 'success') {
         return (
           <div>
             <Jumbotron>
               <Container>
                 <Row>
                   <Col>
-                    <h1>Southwest-CheckIn</h1>
+                    <h1>Southwest Auto Check-In</h1>
                     <Alert color="success">
-                     <div>{this.state.firstName} {this.state.lastName} will be automatically checkedIn on <b>{this.state.dateToExecute} PST</b> with confirmation number: {this.state.confirmationNumber}</div>
-                    </Alert>
-                    <Alert color="success">
-                     <div>A status update email will be sent to {this.state.emailAddress} when this occurs</div>
+                      <h4 className="alert-heading">Success!</h4>
+                      <hr />
+                      <p>
+                        {this.state.firstName} {this.state.lastName} will automatically be checked-in on <b>{this.state.dateToExecute} PST</b>
+                      </p>
+                      <p className="mb-0">
+                        Please check {this.state.emailAddress} for status updates
+                      </p>
                     </Alert>
                   </Col>
                 </Row>
@@ -171,7 +186,7 @@ class App extends Component {
               <Container>
                 <Row>
                   <Col>
-                    <h1>Southwest-CheckIn</h1>
+                    <h1>Southwest Auto Check-In</h1>
                     <h1>ERROR</h1>
                     <h1>ERROR</h1>
                     <h1>ERROR</h1>
