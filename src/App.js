@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class App extends Component {
   constructor(props) {
@@ -16,20 +16,19 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      pageType: 'input',
+      pageType: 'landing',
       message: '',
+      dateToExecute: '',
 
-      firstName: 'sdf',
-      lastName: 'sdf',
-      confirmationNumber: 'sdf',
-      emailAddress: 'asdf@sdf.com',
-      departureDate: "2017-12-06",
-      departureTime: "19:50",
+      firstName: 'john',
+      lastName: 'seyfert',
+      confirmationNumber: 'MWVE2L',
+      emailAddress: 'johnseyfert@gmail.com',
+      departureDate: "2017-12-08",
+      departureTime: "16:00",
       timeZoneDeparture: '',
     };
   }
-
-  //
 
   onFirstNameChange(e) {this.setState({firstName: e.target.value });}
   onLastNameChange(e) {this.setState({lastName: e.target.value });}
@@ -51,9 +50,8 @@ class App extends Component {
 
     let dateTimeDeparture = departureDate + 'T' + departureTime
 
-    // let url = 'http://localhost:3001/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
-    // let url = 'http://localhost:3001/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
-    let url = '/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
+    let url = '/submitCheckIn/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
+    // let url = '/submitCheckIn/john/seyfert/MWVE2L/johnseyfert@gmail.com/2017-12-06 16:40/PA'
     console.log(url)
 
     axios.get(url)
@@ -61,21 +59,22 @@ class App extends Component {
         console.log('in success1', response )
         console.log('in success2', response.data.message )
         this.setState({ 
+          pageType: response.data.pageType, 
           message: response.data.message, 
-          pageType: 'submitted', 
+          dateToExecute: response.data.dateToExecute, 
         })
       })
       .catch(error => {
         console.log(error.response.status);
         this.setState({ 
-          message: error.response.status,
           pageType: 'error', 
+          message: error.response.status,
         })
       });
   }
 
   render() {
-    if (this.state.pageType === 'input'){
+    if (this.state.pageType === 'landing'){
       return (
           <div>
             <Jumbotron>
@@ -136,7 +135,29 @@ class App extends Component {
                 <Row>
                   <Col>
                     <h1>Southwest-CheckIn</h1>
-                    <span><b>Error: </b>{this.state.message}</span>
+                    <Alert color="danger">
+                      <span><b>Error: </b>{this.state.message}</span>
+                    </Alert>
+                  </Col>
+                </Row>
+              </Container>
+            </Jumbotron>
+          </div>
+          );
+      }  else if (this.state.pageType === 'success') {
+        return (
+          <div>
+            <Jumbotron>
+              <Container>
+                <Row>
+                  <Col>
+                    <h1>Southwest-CheckIn</h1>
+                    <Alert color="success">
+                     <div>{this.state.firstName} {this.state.lastName} will be automatically checkedIn on <b>{this.state.dateToExecute} PST</b> with confirmation number: {this.state.confirmationNumber}</div>
+                    </Alert>
+                    <Alert color="success">
+                     <div>A status update email will be sent to {this.state.emailAddress} when this occurs</div>
+                    </Alert>
                   </Col>
                 </Row>
               </Container>
@@ -151,13 +172,17 @@ class App extends Component {
                 <Row>
                   <Col>
                     <h1>Southwest-CheckIn</h1>
-                   <h2>{this.state.message}</h2>
+                    <h1>ERROR</h1>
+                    <h1>ERROR</h1>
+                    <h1>ERROR</h1>
+                    <h1>ERROR</h1>
                   </Col>
                 </Row>
               </Container>
             </Jumbotron>
           </div>
           );
+
       }
 
   }
