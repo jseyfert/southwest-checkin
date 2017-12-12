@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardTitle, CardText, } from 'reactstrap';
+import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardText, } from 'reactstrap';
 
 class App extends Component {
   constructor(props) {
@@ -24,8 +24,8 @@ class App extends Component {
       lastName: 'seyfert',
       confirmationNumber: 'MWVE2L',
       emailAddress: 'johnseyfert@gmail.com',
-      departureDate: "2017-12-08",
-      departureTime: "23:00",
+      departureDate: "2017-12-12",
+      departureTime: "15:00",
       timeZoneDeparture: '',
     };
   }
@@ -76,10 +76,10 @@ class App extends Component {
               <Container>
                 <Row>
                   <Col md={{ size: 6}}>
-                    <h1>Southwest Auto Check-In</h1>
+                    <h1 className="mainLogo">Southwest Auto Check-In</h1>
                     <p>This app automatically checks you in 24 hours ahead of your flight’s departure. Just submit your info and check your email for status updates.</p>
                     <Card>
-                      <CardHeader>southwest.com boarding pollicy</CardHeader>
+                      <CardHeader>Southwest.com boarding pollicy</CardHeader>
                       <CardBody>
                         <CardText>
                         <i>Available boarding positions will be distributed on a first-come, first-serve basis upon check in. The earlier you check in, beginning 24 hours before your departure, the lower your boarding group and position will be.</i>
@@ -142,12 +142,13 @@ class App extends Component {
               <Container>
               <Row>
                 <Col>
-                  <h1>Southwest Auto Check-In</h1>
+                  <h1 className="mainLogo">Southwest Auto Check-In</h1>
                   <Alert color="danger">
                    <p>The server has returned the following error: {this.state.message}</p>
+                  {this.state.message !== 'This trip is already registered' &&
                    <p className="mb-0">
                     Please check-in manually
-                   </p>
+                   </p>}
                   </Alert>
                 </Col>
               </Row>
@@ -162,12 +163,12 @@ class App extends Component {
               <Container>
                 <Row>
                   <Col>
-                    <h1>Southwest Auto Check-In</h1>
+                    <h1 className="mainLogo">Southwest Auto Check-In</h1>
                     <Alert color="success">
                       <h4 className="alert-heading">Success!</h4>
                       <hr />
                       <p>
-                        {this.state.firstName} {this.state.lastName} will automatically be checked-in on <b>{this.state.dateToExecute} PST</b>
+                        {this.state.firstName} {this.state.lastName} will automatically be checked-in on <b>{this.state.dateToExecute}</b>
                       </p>
                       <p className="mb-0">
                         Please check {this.state.emailAddress} for status updates
@@ -186,7 +187,7 @@ class App extends Component {
               <Container>
                 <Row>
                   <Col>
-                    <h1>Southwest Auto Check-In</h1>
+                    <h1 className="mainLogo">Southwest Auto Check-In</h1>
                     <h1>ERROR</h1>
                     <h1>ERROR</h1>
                     <h1>ERROR</h1>
