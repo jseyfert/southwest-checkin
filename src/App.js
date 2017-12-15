@@ -20,12 +20,12 @@ class App extends Component {
       message: '',
       dateToExecute: '',
 
-      firstName: 'john',
-      lastName: 'seyfert',
-      confirmationNumber: 'MWVE2L',
-      emailAddress: 'johnseyfert@gmail.com',
-      departureDate: "2017-12-12",
-      departureTime: "15:00",
+      firstName: '',
+      lastName: '',
+      confirmationNumber: '',
+      emailAddress: '',
+      departureDate: '',
+      departureTime: '',
       timeZoneDeparture: '',
     };
   }
