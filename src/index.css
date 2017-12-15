@@ -4,7 +4,7 @@ body {
   font-family: sans-serif;
 }
 
-h1.mainLogo {
+.mainLogo {
   font-size: 45px;
   text-shadow: 1px 1px 1px #000000;
   color: #266AD2;

@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardText, } from 'reactstrap';
+import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardText,
+InputGroupButton,
+InputGroup,
+ListGroup,
+ListGroupItem,
+ListGroupItemHeading,
+ListGroupItemText,
+CardTitle,
+CardSubtitle,
+ } from 'reactstrap';
 
 class App extends Component {
   constructor(props) {
@@ -13,20 +22,25 @@ class App extends Component {
     this.onDepartureDateChange = this.onDepartureDateChange.bind(this);
     this.onDepartureTimeChange = this.onDepartureTimeChange.bind(this);
     this.onTimeZoneDepartureChange = this.onTimeZoneDepartureChange.bind(this);
+    this.onConfirmationNumberChange2 = this.onConfirmationNumberChange2.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
 
     this.state = {
-      pageType: 'landing',
+      pageType: 'tripsSuccess',
       message: '',
       dateToExecute: '',
 
       firstName: '',
       lastName: '',
       confirmationNumber: '',
+      confirmationNumber2: '',
       emailAddress: '',
       departureDate: '',
       departureTime: '',
       timeZoneDeparture: '',
+
+      data: [],
     };
   }
 
@@ -37,6 +51,28 @@ class App extends Component {
   onDepartureDateChange(e) {this.setState({departureDate: e.target.value });}
   onDepartureTimeChange(e) {this.setState({departureTime: e.target.value });}
   onTimeZoneDepartureChange(e) {this.setState({timeZoneDeparture: e.target.value });}
+  onConfirmationNumberChange2(e) {this.setState({confirmationNumber2: e.target.value });}
+
+  handleSearch(e) {
+    e.preventDefault();
+    let url = '/getExisting/' + this.state.confirmationNumber2
+
+    axios.get(url)
+      .then((response) => {
+        this.setState({ 
+          pageType: response.data.pageType, 
+          message: response.data.message, 
+          data: response.data.data, 
+        })
+      })
+      .catch(error => {
+        this.setState({ 
+          pageType: 'error', 
+          message: error.response.status,
+          data: [],
+        })
+      });
+  }
 
   handleSubmit(e) {
     e.preventDefault();
@@ -78,6 +114,14 @@ class App extends Component {
                   <Col md={{ size: 6}}>
                     <h1 className="mainLogo">Southwest Auto Check-In</h1>
                     <p>This app automatically checks you in 24 hours ahead of your flight’s departure. Just submit your info and check your email for status updates.</p>
+                    <p>Already submitted? Search for existing reservations with your Southwest confirmation number.</p>
+                    <Form onSubmit={ this.handleSearch }>
+                      <InputGroup>
+                        <Input onChange={this.onConfirmationNumberChange2} value={this.state.confirmationNumber2} type="text" name="confirmationNumber2" id="confirmationNumber2" placeholder="Confirmation Number" required/>
+                        <InputGroupButton color="primary">Search Existing</InputGroupButton>
+                      </InputGroup>
+                    </Form>
+                    <br/>
                     <Card>
                       <CardHeader>Southwest.com boarding pollicy</CardHeader>
                       <CardBody>
@@ -174,6 +218,51 @@ class App extends Component {
                         Please check {this.state.emailAddress} for status updates
                       </p>
                     </Alert>
+                  </Col>
+                </Row>
+              </Container>
+            </Jumbotron>
+          </div>
+          );
+      } else if (this.state.pageType === 'tripsSuccess') {
+        return (
+          <div>
+            <Jumbotron>
+              <Container>
+                <Row>
+                  <Col>
+                    <h1 className="mainLogo">Southwest Auto Check-In</h1>
+
+                    <ListGroup>
+                      <ListGroupItem>
+
+                      <Card body outline color="success">
+                        <CardBody >
+                          <CardTitle>John seyfert</CardTitle>
+                          <CardText>Email: johnseyfert@gmail.com</CardText>
+                          <CardText>Confirmation #: ASDF34</CardText>
+                          <small className="text-muted">Auto check-in in 33min</small>
+                        </CardBody>
+                      </Card>
+
+                      </ListGroupItem>
+
+                      <ListGroupItem>
+
+                      <Card body outline color="success">
+                        <CardBody >
+                          <CardTitle>John seyfert</CardTitle>
+                          <CardText>Email: johnseyfert@gmail.com</CardText>
+                          <CardText>Confirmation #: ASDF34</CardText>
+                          <small className="text-muted">Auto check-in in 33min</small>
+                        </CardBody>
+                      </Card>
+
+                      </ListGroupItem>
+                      
+                    </ListGroup>
+
+
                   </Col>
                 </Row>
               </Container>
