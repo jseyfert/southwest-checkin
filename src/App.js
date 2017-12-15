@@ -9,6 +9,7 @@ ListGroupItemHeading,
 ListGroupItemText,
 CardTitle,
 CardSubtitle,
+CardFooter,
  } from 'reactstrap';
 
 class App extends Component {
@@ -27,7 +28,7 @@ class App extends Component {
     this.handleSearch = this.handleSearch.bind(this);
 
     this.state = {
-      pageType: 'tripsSuccess',
+      pageType: 'landing',
       message: '',
       dateToExecute: '',
 
@@ -104,6 +105,15 @@ class App extends Component {
       });
   }
 
+
+  // cardList(data) {
+
+    
+    
+  // }
+
+
+
   render() {
     if (this.state.pageType === 'landing'){
       return (
@@ -122,11 +132,18 @@ class App extends Component {
                       </InputGroup>
                     </Form>
                     <br/>
+
                     <Card>
-                      <CardHeader>Southwest.com boarding pollicy</CardHeader>
+                      <CardHeader>John Seyfert</CardHeader>
                       <CardBody>
                         <CardText>
-                        <i>Available boarding positions will be distributed on a first-come, first-serve basis upon check in. The earlier you check in, beginning 24 hours before your departure, the lower your boarding group and position will be.</i>
+                        <small className="text-muted">Email - </small>johnseyfert@gmail.com
+                        </CardText>
+                        <CardText>
+                        <small className="text-muted">Confirmation - </small>ASDF34
+                        </CardText>
+                        <CardText>
+                        <small className="text-muted">Execution in - </small>33min
                         </CardText>
                       </CardBody>
                     </Card>
@@ -239,27 +256,13 @@ class App extends Component {
                       <Card body outline color="success">
                         <CardBody >
                           <CardTitle>John seyfert</CardTitle>
-                          <CardText>Email: johnseyfert@gmail.com</CardText>
-                          <CardText>Confirmation #: ASDF34</CardText>
-                          <small className="text-muted">Auto check-in in 33min</small>
+                          <CardText>johnseyfert@gmail.com</CardText>
+                          <CardText><small className="text-muted">Confirmation #:</small> ASDF34</CardText>
+                          <CardText><small className="text-muted">Auto check-in in</small>  33min</CardText>
                         </CardBody>
                       </Card>
 
                       </ListGroupItem>
-
-                      <ListGroupItem>
-
-                      <Card body outline color="success">
-                        <CardBody >
-                          <CardTitle>John seyfert</CardTitle>
-                          <CardText>Email: johnseyfert@gmail.com</CardText>
-                          <CardText>Confirmation #: ASDF34</CardText>
-                          <small className="text-muted">Auto check-in in 33min</small>
-                        </CardBody>
-                      </Card>
-
-                      </ListGroupItem>
-                      
                     </ListGroup>
 
 
@@ -294,3 +297,14 @@ class App extends Component {
 }
 
 export default App;
+
+
+
+                    // <Card>
+                    //   <CardHeader>Southwest.com boarding pollicy</CardHeader>
+                    //   <CardBody>
+                    //     <CardText>
+                    //     <i>Available boarding positions will be distributed on a first-come, first-serve basis upon check in. The earlier you check in, beginning 24 hours before your departure, the lower your boarding group and position will be.</i>
+                    //     </CardText>
+                    //   </CardBody>
+                    // </Card>
