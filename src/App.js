@@ -5,12 +5,12 @@ InputGroupButton,
 InputGroup,
 ListGroup,
 ListGroupItem,
-ListGroupItemHeading,
-ListGroupItemText,
+// ListGroupItemHeading,
+// ListGroupItemText,
 CardTitle,
 Badge,
-CardSubtitle,
-CardFooter,
+// CardSubtitle,
+// CardFooter,
  } from 'reactstrap';
 
  import Countdown from 'react-countdown-now';
@@ -141,7 +141,7 @@ class App extends Component {
     var rows = [];
     var data = this.state.data;
 
-    data.map(function(obj){
+    data.forEach(function(obj){
 
       var dateTimeZoneDeparture = moment(obj.dateTimeZoneDeparture).format('MMMM Do YYYY, h:mm:ss a z');
       var dateToExecute = moment(obj.dateToExecute).format();
@@ -174,6 +174,7 @@ class App extends Component {
           </ListGroupItem>
               // <small className="text-muted">Status - </small>{<Countdown date={dateToExecute} zeroPadLength={3} renderer={renderer} />}
          )
+       // return
     })
     return rows
   }
