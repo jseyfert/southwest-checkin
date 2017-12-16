@@ -8,9 +8,13 @@ ListGroupItem,
 ListGroupItemHeading,
 ListGroupItemText,
 CardTitle,
+Badge,
 CardSubtitle,
 CardFooter,
  } from 'reactstrap';
+
+ import Countdown from 'react-countdown-now';
+ var moment = require('moment-timezone');
 
 class App extends Component {
   constructor(props) {
@@ -43,6 +47,23 @@ class App extends Component {
 
       data: [],
     };
+
+    // this.state = {
+    //   pageType: 'landing',
+    //   message: '',
+    //   dateToExecute: '',
+
+    //   firstName: 'qwe',
+    //   lastName: 'qwe',
+    //   confirmationNumber: 'q',
+    //   confirmationNumber2: '',
+    //   emailAddress: 'a@d.com',
+    //   departureDate: "1982-12-12",
+    //   departureTime: "12:12",
+    //   timeZoneDeparture: '',
+
+    //   data: [],
+    // };
   }
 
   onFirstNameChange(e) {this.setState({firstName: e.target.value });}
@@ -105,16 +126,62 @@ class App extends Component {
       });
   }
 
+  showCards() {
 
-  // cardList(data) {
+    const renderer = ({ hours, minutes, seconds, completed }) => {
+      if (completed) {
+        return <Completionist />;
+      } else {
+        return <span>{hours}:{minutes}:{seconds}(PST) until check-in</span>;
+      }
+    };
 
-    
-    
-  // }
+    const Completionist = () => <Badge color="info" pill>Checking In Now</Badge>;
+
+    var rows = [];
+    var data = this.state.data;
+
+    data.map(function(obj){
+
+      var dateTimeZoneDeparture = moment(obj.dateTimeZoneDeparture).format('MMMM Do YYYY, h:mm:ss a z');
+      var dateToExecute = moment(obj.dateToExecute).format();
+
+      const showBadgeStatic = obj.checkedIn ?  <Badge color="success" pill>Checked-In ✓</Badge> : <Badge color="danger" pill>Checked-In Failed</Badge>
+      const showBadge = <Countdown date={dateToExecute} zeroPadLength={3} renderer={renderer} />
+
+       rows.push( 
+          <ListGroupItem key={ obj._id }>
+          <Card>
+            <CardHeader>{obj.firstName} {obj.lastName}</CardHeader>
+            <CardBody>
+              <CardText>
+              <small className="text-muted">Status - </small>{obj.checkedIn || obj.errorEmailSent ? showBadgeStatic : showBadge }
+              </CardText>
+              <CardText>
+              <small className="text-muted">Email - </small>{obj.emailAddress}
+              </CardText>
+              <CardText>
+              <small className="text-muted">Confirmation # - </small>{obj.confirmationNumber}
+              </CardText>
+              <CardText>
+              <small className="text-muted">Departure - </small>{dateTimeZoneDeparture}
+              </CardText>
+              <CardText>
+              <small className="text-muted">TimeZone - </small>{obj.timeZoneDeparture}
+              </CardText>
+            </CardBody>
+          </Card>
+          </ListGroupItem>
+              // <small className="text-muted">Status - </small>{<Countdown date={dateToExecute} zeroPadLength={3} renderer={renderer} />}
+         )
+    })
+    return rows
+  }
 
 
 
   render() {
+    let error =  <Alert color="danger"> Could not find trip ! </Alert>
     if (this.state.pageType === 'landing'){
       return (
           <div>
@@ -124,30 +191,22 @@ class App extends Component {
                   <Col md={{ size: 6}}>
                     <h1 className="mainLogo">Southwest Auto Check-In</h1>
                     <p>This app automatically checks you in 24 hours ahead of your flight’s departure. Just submit your info and check your email for status updates.</p>
+                    <hr />
                     <p>Already submitted? Search for existing reservations with your Southwest confirmation number.</p>
-                    <Form onSubmit={ this.handleSearch }>
-                      <InputGroup>
-                        <Input onChange={this.onConfirmationNumberChange2} value={this.state.confirmationNumber2} type="text" name="confirmationNumber2" id="confirmationNumber2" placeholder="Confirmation Number" required/>
-                        <InputGroupButton color="primary">Search Existing</InputGroupButton>
-                      </InputGroup>
-                    </Form>
-                    <br/>
 
-                    <Card>
-                      <CardHeader>John Seyfert</CardHeader>
-                      <CardBody>
-                        <CardText>
-                        <small className="text-muted">Email - </small>johnseyfert@gmail.com
-                        </CardText>
-                        <CardText>
-                        <small className="text-muted">Confirmation - </small>ASDF34
-                        </CardText>
-                        <CardText>
-                        <small className="text-muted">Execution in - </small>33min
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                  <br/>
+
+                    <ListGroup>
+                      <ListGroupItem>
+                      <Form onSubmit={ this.handleSearch }>
+                        <InputGroup>
+                          <Input onChange={this.onConfirmationNumberChange2} value={this.state.confirmationNumber2} type="text" name="confirmationNumber2" id="confirmationNumber2" placeholder="Confirmation #" required/>
+                          <InputGroupButton color="primary">Search Existing</InputGroupButton>
+                        </InputGroup>
+                      </Form>
+                      </ListGroupItem>
+                      {this.state.message === 'Could not find trip' ? error : this.showCards()}
+                    </ListGroup>
+                    <hr />
 
                   </Col>
                   <Col md={{ size: 6}}>
