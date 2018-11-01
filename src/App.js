@@ -13,7 +13,7 @@ Badge,
 // CardFooter,
  } from 'reactstrap';
 
- import Countdown from 'react-countdown-now';
+ // import Countdown from 'react-countdown-now';
  var moment = require('moment-timezone');
 
 class App extends Component {
@@ -44,6 +44,9 @@ class App extends Component {
       departureDate: '',
       departureTime: '',
       timeZoneDeparture: '',
+
+      confirmDelete: false,
+      deleteId: null,
 
       data: [],
     };
@@ -126,28 +129,64 @@ class App extends Component {
       });
   }
 
+  handelDelete(_id) {
+
+    let url = '/deleteTrip/' + _id
+
+    axios.get(url)
+      .then((response) => {
+        this.setState({ 
+          pageType: response.data.pageType, 
+        })
+      })
+      .catch(error => {
+        this.setState({ 
+          pageType: 'error', 
+          message: error.response.status,
+        })
+      });
+  }
+
+
+  renderDeleteButton(_id) {
+    
+    if (this.state.confirmDelete) {
+      return <Button color="danger" onClick={ () => this.handelDelete(_id)}>Are you sure? Yes!</Button>;
+    }
+
+    if (this.state.confirmationNumber2 === "showall") {
+      return <Button color="warning" onClick={ () => this.setState({confirmDelete: true })}>Delete</Button>;
+    }
+
+    return null;
+
+  }
+
+
   showCards() {
 
-    const renderer = ({ hours, minutes, seconds, completed }) => {
-      if (completed) {
-        return <Completionist />;
-      } else {
-        return <span>{hours}:{minutes}:{seconds}(PST) until check-in</span>;
-      }
-    };
+    // const renderer = ({ hours, minutes, seconds, completed }) => {
+    //   if (completed) {
+    //     return <Completionist />;
+    //   } else {
+    //     return <span>{hours}:{minutes}:{seconds}(PST) until check-in</span>;
+    //   }
+    // };
 
-    const Completionist = () => <Badge color="info" pill>Checking In Now</Badge>;
+    // const Completionist = () => <Badge color="info" pill>Checking In Now</Badge>;
 
     var rows = [];
+    // var data = this.state.data;
     var data = this.state.data;
+    //fix
 
-    data.forEach(function(obj){
+    data.forEach((obj) =>{
 
       var dateTimeZoneDeparture = moment(obj.dateTimeZoneDeparture).format('MMMM Do YYYY, h:mm:ss a z');
-      var dateToExecute = moment(obj.dateToExecute).format();
+      // var dateToExecute = moment(obj.dateToExecute).format();
 
       const showBadgeStatic = obj.checkedIn ?  <Badge color="success" pill>Checked-In ✓</Badge> : <Badge color="danger" pill>Checked-In Failed</Badge>
-      const showBadge = <Countdown date={dateToExecute} zeroPadLength={3} renderer={renderer} />
+      const showBadge = <Badge color="warning" pill>Checking in soon</Badge>
 
        rows.push( 
           <ListGroupItem key={ obj._id }>
@@ -169,14 +208,14 @@ class App extends Component {
               <CardText>
               <small className="text-muted">TimeZone - </small>{obj.timeZoneDeparture}
               </CardText>
+              {this.renderDeleteButton(obj._id)}
+                
             </CardBody>
           </Card>
           </ListGroupItem>
-              // <small className="text-muted">Status - </small>{<Countdown date={dateToExecute} zeroPadLength={3} renderer={renderer} />}
          )
-       // return
     })
-    return rows
+    return rows.reverse();
   }
 
 
@@ -319,6 +358,34 @@ class App extends Component {
                           <CardText>johnseyfert@gmail.com</CardText>
                           <CardText><small className="text-muted">Confirmation #:</small> ASDF34</CardText>
                           <CardText><small className="text-muted">Auto check-in in</small>  33min</CardText>
+                        </CardBody>
+                      </Card>
+
+                      </ListGroupItem>
+                    </ListGroup>
+
+
+                  </Col>
+                </Row>
+              </Container>
+            </Jumbotron>
+          </div>
+          );
+      } else if (this.state.pageType === 'tripDeleted') {
+        return (
+          <div>
+            <Jumbotron>
+              <Container>
+                <Row>
+                  <Col>
+                    <h1 className="mainLogo">Southwest Auto Check-In</h1>
+
+                    <ListGroup>
+                      <ListGroupItem>
+
+                      <Card body outline color="success">
+                        <CardBody >
+                          <CardTitle>Trip has been deleted</CardTitle>
                         </CardBody>
                       </Card>
 
