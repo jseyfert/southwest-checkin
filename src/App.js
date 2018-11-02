@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Alert, Container, Row, Col, Jumbotron, Button, Form, FormGroup, Label, Input, Card, CardHeader, CardBody, CardText,
+import { 
+Alert, 
+Container, 
+Row, 
+Col, 
+Jumbotron, 
+Button, 
+Form, 
+FormGroup, 
+Label, 
+Input, 
+Card, 
+CardHeader, 
+CardBody, 
+CardText,
 InputGroupButton,
 InputGroup,
 ListGroup,
 ListGroupItem,
-// ListGroupItemHeading,
-// ListGroupItemText,
 CardTitle,
 Badge,
-// CardSubtitle,
-// CardFooter,
  } from 'reactstrap';
 
- // import Countdown from 'react-countdown-now';
  var moment = require('moment-timezone');
 
 class App extends Component {
@@ -24,59 +33,54 @@ class App extends Component {
     this.onLastNameChange = this.onLastNameChange.bind(this);
     this.onConfirmationNumberChange = this.onConfirmationNumberChange.bind(this);
     this.onEmailAddressChange = this.onEmailAddressChange.bind(this);
-    this.onDepartureDateChange = this.onDepartureDateChange.bind(this);
-    this.onDepartureTimeChange = this.onDepartureTimeChange.bind(this);
-    this.onTimeZoneDepartureChange = this.onTimeZoneDepartureChange.bind(this);
     this.onConfirmationNumberChange2 = this.onConfirmationNumberChange2.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+
+    this.onDepartureDateChange = this.onDepartureDateChange.bind(this);
+    this.onDepartureTimeChange = this.onDepartureTimeChange.bind(this);
+    this.onTimeZoneDepartureChange = this.onTimeZoneDepartureChange.bind(this);    
+    this.onReturnDateChange = this.onReturnDateChange.bind(this);
+    this.onReturnTimeChange = this.onReturnTimeChange.bind(this);
+    this.onTimeZoneReturnChange = this.onTimeZoneReturnChange.bind(this);
 
     this.state = {
       pageType: 'landing',
       message: '',
       dateToExecute: '',
+      confirmDelete: false,
+      deleteId: null,
+
+      returnTrip: false,
 
       firstName: '',
       lastName: '',
       confirmationNumber: '',
       confirmationNumber2: '',
       emailAddress: '',
+
       departureDate: '',
       departureTime: '',
       timeZoneDeparture: '',
-
-      confirmDelete: false,
-      deleteId: null,
+      returnDate: '',
+      returnTime: '',
+      timeZoneReturn: '',
 
       data: [],
     };
-
-    // this.state = {
-    //   pageType: 'landing',
-    //   message: '',
-    //   dateToExecute: '',
-
-    //   firstName: 'qwe',
-    //   lastName: 'qwe',
-    //   confirmationNumber: 'q',
-    //   confirmationNumber2: '',
-    //   emailAddress: 'a@d.com',
-    //   departureDate: "1982-12-12",
-    //   departureTime: "12:12",
-    //   timeZoneDeparture: '',
-
-    //   data: [],
-    // };
   }
 
   onFirstNameChange(e) {this.setState({firstName: e.target.value });}
   onLastNameChange(e) {this.setState({lastName: e.target.value });}
   onConfirmationNumberChange(e) {this.setState({confirmationNumber: e.target.value });}
   onEmailAddressChange(e) {this.setState({emailAddress: e.target.value });}
+  onConfirmationNumberChange2(e) {this.setState({confirmationNumber2: e.target.value });}
   onDepartureDateChange(e) {this.setState({departureDate: e.target.value });}
   onDepartureTimeChange(e) {this.setState({departureTime: e.target.value });}
   onTimeZoneDepartureChange(e) {this.setState({timeZoneDeparture: e.target.value });}
-  onConfirmationNumberChange2(e) {this.setState({confirmationNumber2: e.target.value });}
+  onReturnDateChange(e) {this.setState({returnDate: e.target.value });}
+  onReturnTimeChange(e) {this.setState({returnTime: e.target.value });}
+  onTimeZoneReturnChange(e) {this.setState({timeZoneReturn: e.target.value });}
 
   handleSearch(e) {
     e.preventDefault();
@@ -108,10 +112,15 @@ class App extends Component {
     let departureDate = this.state.departureDate
     let departureTime = this.state.departureTime
     let timeZoneDeparture = this.state.timeZoneDeparture
+    let returnDate = this.state.returnDate
+    let returnTime = this.state.returnTime
+    let timeZoneReturn = this.state.timeZoneReturn
 
     let dateTimeDeparture = departureDate + 'T' + departureTime
+    let dateTimeReturn = returnDate + 'T' + returnTime
+    timeZoneReturn = dateTimeReturn === 'T' ? 0 : timeZoneReturn
 
-    let url = '/submitCheckIn/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture
+    let url = '/submitCheckIn/' + firstName + '/' + lastName + '/' + confirmationNumber + '/' + emailAddress + '/' + dateTimeDeparture + '/' + timeZoneDeparture + '/' + dateTimeReturn + '/' + timeZoneReturn
 
     axios.get(url)
       .then((response) => {
@@ -165,25 +174,12 @@ class App extends Component {
 
   showCards() {
 
-    // const renderer = ({ hours, minutes, seconds, completed }) => {
-    //   if (completed) {
-    //     return <Completionist />;
-    //   } else {
-    //     return <span>{hours}:{minutes}:{seconds}(PST) until check-in</span>;
-    //   }
-    // };
-
-    // const Completionist = () => <Badge color="info" pill>Checking In Now</Badge>;
-
     var rows = [];
-    // var data = this.state.data;
     var data = this.state.data;
-    //fix
 
     data.forEach((obj) =>{
 
       var dateTimeZoneDeparture = moment(obj.dateTimeZoneDeparture).format('MMMM Do YYYY, h:mm:ss a z');
-      // var dateToExecute = moment(obj.dateToExecute).format();
 
       const showBadgeStatic = obj.checkedIn ?  <Badge color="success" pill>Checked-In ✓</Badge> : <Badge color="danger" pill>Checked-In Failed</Badge>
       const showBadge = <Badge color="warning" pill>Checking in soon</Badge>
@@ -260,13 +256,15 @@ class App extends Component {
                          <Input  onChange={this.onLastNameChange} value={this.state.lastName} type="text" name="lastName" id="lastName" required/>
                        </FormGroup>
                        <FormGroup>
-                         <Label for="confirmationNumber">Confirmation Number</Label>
-                         <Input  onChange={this.onConfirmationNumberChange} value={this.state.confirmationNumber} type="text" name="confirmationNumber" id="confirmationNumber" required/>
-                       </FormGroup>
-                       <FormGroup>
                          <Label for="emailAddress">Email Address</Label>
                          <Input onChange={this.onEmailAddressChange} value={this.state.emailAddress} type="email" name="emailAddress" id="emailAddress" required/>
                        </FormGroup>
+                       <FormGroup>
+                         <Label for="confirmationNumber">Confirmation Number</Label>
+                         <Input  onChange={this.onConfirmationNumberChange} value={this.state.confirmationNumber} type="text" name="confirmationNumber" id="confirmationNumber" required/>
+                       </FormGroup>
+
+                       <hr />
                        <FormGroup>
                          <Label for="departureDate">Departure Date</Label>
                          <Input  onChange={this.onDepartureDateChange} value={this.state.departureDate} type="date" name="departureDate" id="departureDate" placeholder="date placeholder" required/>
@@ -286,8 +284,35 @@ class App extends Component {
                            <option value="CE">Central</option>
                            <option value="ES">Eastern</option>
                          </Input>
+                       </FormGroup> 
+
+                       {this.state.returnTrip && <div>
+                        <hr />
+                       <FormGroup>
+                         <Label for="returnDate">Return Date</Label>
+                         <Input  onChange={this.onReturnDateChange} value={this.state.returnDate} type="date" name="returnDate" id="returnDate" placeholder="date placeholder" required/>
                        </FormGroup>
-                       <Button color="primary">Submit</Button>
+                       <FormGroup>
+                         <Label for="returnTime">Return Time</Label>
+                         <Input  onChange={this.onReturnTimeChange} value={this.state.returnTime} type="time" name="returnTime" id="returnTime" placeholder="time placeholder" required/>
+                       </FormGroup>
+                       <FormGroup>
+                         <Label for="timeZoneReturn">Return Time Zone</Label>
+                         <Input  onChange={this.onTimeZoneReturnChange} value={this.state.timeZoneReturn} type="select" name="timeZoneReturn" id="timeZoneReturn" required>
+                           <option></option>
+                           <option value="HI">Hawaii</option>
+                           <option value="AL">Alaska</option>
+                           <option value="PA">Pacific</option>
+                           <option value="MT">Mountain</option>
+                           <option value="CE">Central</option>
+                           <option value="ES">Eastern</option>
+                         </Input>
+                       </FormGroup>
+                       </div>} 
+
+                       {!this.state.returnTrip && <button type="button" onClick={ () => this.setState({returnTrip: true })} className="btn btn-link">Add Return</button>}
+
+                       <Button color="primary" className="float-right">Submit</Button>
                      </Form>
                   </Col>
                 </Row>
@@ -424,14 +449,3 @@ class App extends Component {
 }
 
 export default App;
-
-
-
-                    // <Card>
-                    //   <CardHeader>Southwest.com boarding pollicy</CardHeader>
-                    //   <CardBody>
-                    //     <CardText>
-                    //     <i>Available boarding positions will be distributed on a first-come, first-serve basis upon check in. The earlier you check in, beginning 24 hours before your departure, the lower your boarding group and position will be.</i>
-                    //     </CardText>
-                    //   </CardBody>
-                    // </Card>
